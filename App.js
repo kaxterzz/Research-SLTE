@@ -53,6 +53,7 @@ class App extends Component{
   }
 
   render() {
+    console.disableYellowBox = true;
       return (
         <SocketContext.Provider value={socket}>
           <Root>

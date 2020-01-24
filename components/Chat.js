@@ -89,6 +89,8 @@ class Chat extends React.Component {
                     name: 'You'
                 };
                 message.image = response.uri;
+                message.sent = true
+                message.received = true
 
                 this.setState(prevState => ({
                     messages: GiftedChat.append(prevState.messages, message),
@@ -117,6 +119,8 @@ class Chat extends React.Component {
                     name: 'You'
                 };
                 message.image = response.uri;
+                message.sent = true
+                message.received = true
 
                 this.setState(prevState => ({
                     messages: GiftedChat.append(prevState.messages, message),
