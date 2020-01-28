@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import ImagePicker from 'react-native-image-picker';
 import { GiftedChat, Composer, Send } from 'react-native-gifted-chat'
 import { View, Button, Icon } from 'native-base'
@@ -23,6 +24,7 @@ class Chat extends React.Component {
         this._showNewMsg = this._showNewMsg.bind(this);
         this.openCamera = this.openCamera.bind(this);
         this.openGallery = this.openGallery.bind(this);
+        this.uploadImage = this.uploadImage.bind(this);
         this.props.socket.on('new message', this._showNewMsg);
     }
 
@@ -33,6 +35,19 @@ class Chat extends React.Component {
         this.setState(previousState => ({
             messages: GiftedChat.append(previousState.messages, messages),
         }))
+    }
+
+    uploadImage(img) {
+        axios.post('http://64.227.53.189:1230/upload-image', {
+            image: img
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        //more /var/log/nginx/error.log
     }
 
     renderComposer = props => {
@@ -80,7 +95,7 @@ class Chat extends React.Component {
                 console.log('ImagePicker Error: ', response.error);
             } else if (response.customButton) {
                 console.log('User tapped custom button: ', response.customButton);
-            } else {;
+            } else {
                 const message = {};
                 message._id = 2;
                 message.createdAt = Date.now();
@@ -95,6 +110,8 @@ class Chat extends React.Component {
                 this.setState(prevState => ({
                     messages: GiftedChat.append(prevState.messages, message),
                 }))
+
+                this.uploadImage(response.data)
             }
         });
     }
@@ -125,6 +142,7 @@ class Chat extends React.Component {
                 this.setState(prevState => ({
                     messages: GiftedChat.append(prevState.messages, message),
                 }))
+                this.uploadImage(response.data)
             }
         });
     }

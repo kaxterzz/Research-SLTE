@@ -39,7 +39,7 @@ class Authentication extends Component {
     return (
       <Container style={styles.textStyle}>
         <View>
-          <H1 style={styles.headerSyle}>Sign Language Translation Engine</H1>
+          <H1 style={styles.headerSyle}>Sign Language Processing Engine</H1>
         </View>
         <Content
           contentContainerStyle={{

@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
     "@react-native-community/netinfo": "^3",
+    "axios": "^0.19.2",
     "create-react-class": "^15.6.3",
     "express-device": "^0.4.2",
     "express-handlebars": "^3.0.0",
