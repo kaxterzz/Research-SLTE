@@ -10,7 +10,7 @@ import SocketContext from './Context/SocketContext'
 import AsyncStorage from '@react-native-community/async-storage';
 import PushNotification from 'react-native-push-notification'
 
-const socket = io("http://139.59.37.180:3773",{transports: ['websocket']});
+const socket = io("http://139.59.37.180:3770",{transports: ['websocket']});
 
     if (!window.location) {
       // App is running in simulator

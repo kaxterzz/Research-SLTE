@@ -1,9 +1,9 @@
 import React from 'react'
 import axios from 'axios'
+import io from 'socket.io-client'
 import ImagePicker from 'react-native-image-picker';
 import { GiftedChat, Composer, Send } from 'react-native-gifted-chat'
 import { View, Button, Icon } from 'native-base'
-import { Image } from 'react-native'
 
 const options = {
     title: 'Pick an image',
@@ -16,10 +16,14 @@ const options = {
 
 
 class Chat extends React.Component {
-    state = {
-        messages: [],
-        photo: null
+    constructor(props) {
+        super(props);
+        this.state = {
+            messages: [],
+            photo: null
+        }
     }
+
 
 
     componentDidMount() {
@@ -27,7 +31,9 @@ class Chat extends React.Component {
         this.openCamera = this.openCamera.bind(this);
         this.openGallery = this.openGallery.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
+        this.signResult = this.signResult.bind(this);
         this.props.socket.on('new message', this._showNewMsg);
+        this.props.socket.on('get_res', this.signResult);
     }
 
     onSend(messages = []) {
@@ -96,20 +102,12 @@ class Chat extends React.Component {
                 'Access-Control-Allow-Origin': '*'
             }
         }
-        axios.post('http://64.227.53.189:1230/upload-image',this.createFormData(this.state.photo), config)
+        axios.post('http://64.227.53.189:1230/upload-image', this.createFormData(this.state.photo), config)
             .then(function (response) {
                 console.log(response);
                 if (response.status == 200) {
-                    const message = {};
-                    message._id = 2;
-                    message.text = 'Success !'
-                    message.createdAt = Date.now();
-                    message.user = {
-                        _id: 2,
-                        name: 'Mr.Robot',
-                        avatar: require('../asset/images/bot.png')
-                    };
-                    self._showNewMsg(message)
+                    console.log('status 200');
+                    
                 } else {
                     const message = {};
                     message._id = 3;
@@ -133,6 +131,21 @@ class Chat extends React.Component {
                 console.log(error);
             });
         //more /var/log/nginx/error.log
+    }
+
+    signResult(result) {
+        console.log(result);
+        
+        const message = {};
+        message._id = 2;
+        message.text = result
+        message.createdAt = Date.now();
+        message.user = {
+            _id: 2,
+            name: 'Mr.Robot',
+            avatar: require('../asset/images/bot.png')
+        };
+        this._showNewMsg(message)
     }
 
     renderComposer = props => {
