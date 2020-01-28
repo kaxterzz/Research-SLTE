@@ -10,13 +10,15 @@ const options = {
     storageOptions: {
         skipBackup: true,
         path: 'images',
+        noData: true,
     },
 };
 
 
 class Chat extends React.Component {
     state = {
-        messages: []
+        messages: [],
+        photo: null
     }
 
 
@@ -37,16 +39,99 @@ class Chat extends React.Component {
         }))
     }
 
-    uploadImage(img) {
-        axios.post('http://64.227.53.189:1230/upload-image', {
-            image: img
-          })
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+    // uploadImage() {
+    //     var self = this
+    //     fetch("http://64.227.53.189:1230/upload-image", {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Access-Control-Allow-Origin': '*'
+    //         },
+    //         body: this.createFormData(this.state.photo)
+    //     })
+    //         .then(response => response.json())
+    //         .then(response => {
+    //             if (response.status == 200) {
+    //                 const message = {};
+    //                 message._id = 2;
+    //                 message.text = 'Success !'
+    //                 message.createdAt = Date.now();
+    //                 message.user = {
+    //                     _id: 2,
+    //                     name: 'Mr.Robot',
+    //                     avatar: require('../asset/images/bot.png')
+    //                 };
+    //                 self._showNewMsg(message)
+    //             } else {
+    //                 const message = {};
+    //                 message._id = 3;
+    //                 message.createdAt = Date.now();
+    //                 message.system = true;
+    //                 message.text = 'Sorry, something happened at our end. Try again later !'
+    //                 self.setState(prevState => ({
+    //                     messages: GiftedChat.append(prevState.messages, message),
+    //                 }))
+    //             }
+    //             console.log("upload succes", response);
+    //             this.setState({ photo: null });
+    //         })
+    //         .catch(error => {
+    //             console.log("upload error", error);
+    //             const message = {};
+    //             message._id = 3;
+    //             message.createdAt = Date.now();
+    //             message.system = true;
+    //             message.text = 'Sorry, something happened at our end. Try again later !'
+    //             self.setState(prevState => ({
+    //                 messages: GiftedChat.append(prevState.messages, message),
+    //             }))
+    //         });
+    // };
+
+    uploadImage() {
+        var self = this
+        var config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Access-Control-Allow-Origin': '*'
+            }
+        }
+        axios.post('http://64.227.53.189:1230/upload-image',this.createFormData(this.state.photo), config)
+            .then(function (response) {
+                console.log(response);
+                if (response.status == 200) {
+                    const message = {};
+                    message._id = 2;
+                    message.text = 'Success !'
+                    message.createdAt = Date.now();
+                    message.user = {
+                        _id: 2,
+                        name: 'Mr.Robot',
+                        avatar: require('../asset/images/bot.png')
+                    };
+                    self._showNewMsg(message)
+                } else {
+                    const message = {};
+                    message._id = 3;
+                    message.createdAt = Date.now();
+                    message.system = true;
+                    message.text = 'Sorry, something happened at our end. Try again later !'
+                    self.setState(prevState => ({
+                        messages: GiftedChat.append(prevState.messages, message),
+                    }))
+                }
+            })
+            .catch(function (error) {
+                const message = {};
+                message._id = 3;
+                message.createdAt = Date.now();
+                message.system = true;
+                message.text = 'Sorry, something happened at our end. Try again later !'
+                self.setState(prevState => ({
+                    messages: GiftedChat.append(prevState.messages, message),
+                }))
+                console.log(error);
+            });
         //more /var/log/nginx/error.log
     }
 
@@ -111,7 +196,9 @@ class Chat extends React.Component {
                     messages: GiftedChat.append(prevState.messages, message),
                 }))
 
-                this.uploadImage(response.data)
+                this.setState({ photo: response })
+
+                this.uploadImage()
             }
         });
     }
@@ -142,7 +229,9 @@ class Chat extends React.Component {
                 this.setState(prevState => ({
                     messages: GiftedChat.append(prevState.messages, message),
                 }))
-                this.uploadImage(response.data)
+                this.setState({ photo: response })
+
+                this.uploadImage()
             }
         });
     }
@@ -153,6 +242,19 @@ class Chat extends React.Component {
         }))
 
     }
+
+    createFormData(photo) {
+        const data = new FormData();
+
+        data.append("file", {
+            name: photo.fileName,
+            type: photo.type,
+            uri:
+                Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+        });
+
+        return data;
+    };
 }
 
 export default Chat;
