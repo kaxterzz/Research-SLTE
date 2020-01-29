@@ -33,7 +33,7 @@ class Chat extends React.Component {
         this.uploadImage = this.uploadImage.bind(this);
         this.signResult = this.signResult.bind(this);
         this.props.socket.on('new message', this._showNewMsg);
-        this.props.socket.on('get_res', this.signResult);
+        this.props.socket.on('get res', this.signResult);
     }
 
     onSend(messages = []) {
@@ -107,7 +107,16 @@ class Chat extends React.Component {
                 console.log(response);
                 if (response.status == 200) {
                     console.log('status 200');
-                    
+                    const message = {};
+                    message._id = 2;
+                    message.text = 'Success !'
+                    message.createdAt = Date.now();
+                    message.user = {
+                        _id: 2,
+                        name: 'Mr.Robot',
+                        avatar: require('../asset/images/bot.png')
+                    };
+                    self._showNewMsg(message)
                 } else {
                     const message = {};
                     message._id = 3;
