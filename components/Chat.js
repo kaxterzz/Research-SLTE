@@ -102,21 +102,25 @@ class Chat extends React.Component {
                 'Access-Control-Allow-Origin': '*'
             }
         }
-        axios.post('http://64.227.53.189:1230/upload-image', this.createFormData(this.state.photo), config)
+        axios.post('http://139.59.37.180:1230/upload-image', this.createFormData(this.state.photo), config)
             .then(function (response) {
-                console.log(response);
+                console.log('res', response);
                 if (response.status == 200) {
                     console.log('status 200');
                     const message = {};
-                    message._id = 2;
+                    message._id = Math.floor(Math.random() * 10000);
                     message.text = 'Success !'
                     message.createdAt = Date.now();
                     message.user = {
-                        _id: 2,
+                        _id: Math.floor(Math.random() * 10000),
                         name: 'Mr.Robot',
                         avatar: require('../asset/images/bot.png')
                     };
                     self._showNewMsg(message)
+
+                    self.signResult(response.data)
+                 
+
                 } else {
                     const message = {};
                     message._id = 3;
@@ -126,9 +130,25 @@ class Chat extends React.Component {
                     self.setState(prevState => ({
                         messages: GiftedChat.append(prevState.messages, message),
                     }))
+                    // const message = {};
+                    // message._id = 3;
+                    // message.createdAt = Date.now();
+                    // message.system = true;
+                    // message.text = 'B'
+                    // self.setState(prevState => ({
+                    //     messages: GiftedChat.append(prevState.messages, message),
+                    // }))
                 }
             })
             .catch(function (error) {
+                // const message = {};
+                // message._id = 3;
+                // message.createdAt = Date.now();
+                // message.system = true;
+                // message.text = 'B'
+                // self.setState(prevState => ({
+                //     messages: GiftedChat.append(prevState.messages, message),
+                // }))
                 const message = {};
                 message._id = 3;
                 message.createdAt = Date.now();
@@ -137,20 +157,19 @@ class Chat extends React.Component {
                 self.setState(prevState => ({
                     messages: GiftedChat.append(prevState.messages, message),
                 }))
-                console.log(error);
             });
         //more /var/log/nginx/error.log
     }
 
     signResult(result) {
         console.log(result);
-        
+
         const message = {};
-        message._id = 2;
+        message._id = Math.floor(Math.random() * 10000);
         message.text = result
         message.createdAt = Date.now();
         message.user = {
-            _id: 2,
+            _id: Math.floor(Math.random() * 10000),
             name: 'Mr.Robot',
             avatar: require('../asset/images/bot.png')
         };
@@ -204,7 +223,7 @@ class Chat extends React.Component {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
                 const message = {};
-                message._id = 2;
+                message._id = Math.floor(Math.random() * 10000);
                 message.createdAt = Date.now();
                 message.user = {
                     _id: 1,
@@ -238,7 +257,7 @@ class Chat extends React.Component {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
                 const message = {};
-                message._id = 2;
+                message._id = Math.floor(Math.random() * 10000);
                 message.createdAt = Date.now();
                 message.user = {
                     _id: 1,
